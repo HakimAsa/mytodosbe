@@ -12,7 +12,6 @@ module.exports = function () {
       useUnifiedTopology: true,
       autoIndex: false, // into for unique names
     })
-    .then(() => console.log(`Connected to ${db}...`.cyan.underline.bold))
-    .catch((ex) => console.error(ex));
+    .then(() => winston.info(`Connected to ${db}...`.cyan.underline.bold))
+    .catch((ex) => winston.error(ex));
 };
-//const uri = "mongodb+srv://fivefellow:<password>@cluster0.lxd3q.mongodb.net/<dbname>?retryWrites=true&w=majority";
