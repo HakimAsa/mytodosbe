@@ -1,5 +1,6 @@
 const CONS = {
   INPUT_STRING: 'Your input should be a valid string',
+  TODO: 'Todo',
 };
 
 const SYMBOLS = {

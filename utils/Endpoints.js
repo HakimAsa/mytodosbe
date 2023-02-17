@@ -1,4 +1,5 @@
 const ENDPOINSTS = {
+  CONSID: ':id',
   MYTODOS: 'mytodos',
 };
 
