@@ -13,5 +13,5 @@ module.exports = function () {
       autoIndex: false, // into for unique names
     })
     .then(() => winston.info(`Connected to ${db}...`.cyan.underline.bold))
-    .catch((ex) => winston.error(ex));
+    .catch((ex) => console.error(ex));
 };
