@@ -17,4 +17,7 @@ const userSchema = new Schema({
     minlength: 5,
     maxlength: 255,
   },
+  passowrd: {
+    type: String,
+  },
 });
