@@ -2,7 +2,7 @@
   "name": "todorestapi",
   "version": "1.0.0",
   "description": "implementing a backend todo app using expressjs nodejs ",
-  "main": "mytodosbe/server.js",
+  "main": "server.js",
   "repository": "https://github.com/HakimAsa/mytodosbe.git",
   "author": "akim ayena",
   "license": "MIT",
