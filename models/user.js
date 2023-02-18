@@ -20,4 +20,9 @@ const userSchema = new Schema({
   passowrd: {
     type: String,
   },
+
+  isadmin: {
+    type: Boolean,
+    default: false,
+  },
 });
