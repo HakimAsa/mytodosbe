@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 const { Todo, validate } = require('../models/todo');
 const fourOfour = require('../utils/404');
 const { CONS } = require('../utils/Constants');
-const del = require('../utils/deleteMsg');
+const del = require('../utils/DeleteMsg');
 
 // @desc Fetch my own todos
 // @route GET /api/v1/todos/mytodos
