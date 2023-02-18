@@ -32,6 +32,11 @@ module.exports = function (app) {
     res.json({ mytodoapp: 'is awesome' });
   });
 
+  //favicon for fixing that request on prodcution
+  app.get('/favicon.ico', (req, res) => {
+    res.json({ myfavico: 'is coming soon...' });
+  });
+
   app.use('/api/v1/todos', todos);
 
   //global error middleware
