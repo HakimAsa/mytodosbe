@@ -1,4 +1,4 @@
-- after cloning the project from GitHub by using <git clone https://github.com/HakimAsa/mytodosbe.git> command:
+- after cloning the project from GitHub by using <code>git clone https://github.com/HakimAsa/mytodosbe.git </code> command:
 
 1.  npm install or yarn install
 2.  SET UP DB URL
