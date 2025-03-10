@@ -11,6 +11,6 @@
 
     If you have to head over https://cloud.mongodb.com/ to sign up or login. Please follow the instructions from mongodb site. create a db named tododb(or whatever you like) and copy the string url "mongodb+srv://<db_username>:<db_password>@cluster0.lxd3q.mongodb.net/<db_name>?retryWrites=true&w=majority&appName=Cluster0".
 
-        open your terminal (please if you're on window, download gitbash) and cd to project root; copy and paste this: <code>export TODOSDB="mongodb+srv://<db_username>:<db_password>@cluster0.lxd3q.mongodb.net/<db_name>?retryWrites=true&w=majority&appName=Cluster0"</code>, then hit enter. Please remember to replace your own database credentials.
+    open your terminal (please if you're on window, download gitbash) and cd to project root; copy and paste this: <code>export TODOSDB="mongodb+srv://<db_username>:<db_password>@cluster0.lxd3q.mongodb.net/<db_name>?retryWrites=true&w=majority&appName=Cluster0"</code>, then hit enter. Please remember to replace your own database credentials.
 
 3.  run npm run dev or yarn dev to start the project.
