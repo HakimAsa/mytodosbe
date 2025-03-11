@@ -4,11 +4,11 @@
 
 2.  SET UP DB URL
 
-    2.1. Local database
+    ## 2.1. Local database
 
     if you have the mongo compass installed, then you set the following string in config/default.json file: <strong>"db":"mongodb://localhost:27017</strong>
 
-    2.2. Remote database
+    ## 2.2. Remote database
 
     If you have to head over https://cloud.mongodb.com/ to sign up or login. Please follow the instructions from mongodb site. create a db named tododb(or whatever you like) and copy the string url <code>"mongodb+srv://<db_username>:<db_password>@cluster0.lxd3q.mongodb.net/<db_name>?retryWrites=true&w=majority&appName=Cluster0"</code>.
 
