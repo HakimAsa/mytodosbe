@@ -1,3 +1,6 @@
 {
-    "db": "TODOSDB"
+  "db": "TODOSDB",
+  "jwtPrivateKey": "Td_jwtPrivateKey",
+  "jwtExpiresIn": "Td_jwtExpiresIn",
+  "jwtCookieExpire": "Td_jwtCookieExpire"
 }

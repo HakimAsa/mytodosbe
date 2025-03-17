@@ -1,5 +1,8 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
+const config = require('config')
+
 const { glb } = require('../utils/Globals')
 const { COL } = require('../utils/Collections')
 
@@ -42,6 +45,15 @@ const userSchema = new Schema(
     toObject: { virtuals: true, setters: true },
   }
 )
+
+userSchema.methods.generateAuthToken = function () {
+  const token = jwt.sign(
+    { _id: this._id, role: this.role },
+    config.get('jwtPrivateKey'),
+    { expiresIn: config.get('jwtExpiresIn') }
+  )
+  return token
+}
 
 const User = mongoose.model(glb.capitalizeFirstLetter(COL.USER), userSchema)
 function validateUser(user, isRequired) {

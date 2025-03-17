@@ -1,3 +1,8 @@
 {
-    "db": ""
+  "db": "",
+  "jwtPrivateKey": "",
+  "jwtExpiresIn": "",
+  "jwtCookieExpire": "",
+  "smtp_host": "",
+  "smtp_port": ""
 }
