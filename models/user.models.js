@@ -43,13 +43,16 @@ const userSchema = new Schema(
       minlength: 5,
       maxlength: 255,
     },
-    passowrd: {
+    password: {
       type: String,
     },
     confirmpassword: {
       type: String,
     },
-
+    islogin: {
+      type: Boolean,
+      default: false,
+    },
     role: {
       type: String,
       enum: ['user', 'admin', 'premium'],
@@ -69,7 +72,14 @@ const userSchema = new Schema(
     toObject: { virtuals: true, setters: true },
   }
 )
-userSchema.createIndex({ username: 1 }, { unique: true })
+userSchema.index({ username: 1 })
+
+// Define a virtual property "fullname"
+userSchema.virtual('fullname').get(function () {
+  let me = this
+  if (!me.firstname || !me.lastname) return '' // Handle missing values
+  return `${me.firstname} ${me.lastname}`.toUpperCase()
+})
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
@@ -108,10 +118,11 @@ function validateUser(user, isRequired) {
       street: Joi.string(),
     }),
     username: isRequired
-      ? Joi.string().min(5).max(50).required()
-      : Joi.string().min(5).max(50),
+      ? Joi.string().min(3).max(50).required()
+      : Joi.string().min(3).max(50),
     email: Joi.string().min(5).max(255).email().required(),
-    passowrd: Joi.string().min(5).max(255).required(),
+    password: Joi.string().min(5).max(255).required(),
+    confirmpassword: Joi.string().min(5).max(255).required(),
     role: Joi.string().valid('user', 'admin', 'premium'),
     language: Joi.string().valid('en', 'fr'), //'es', 'de', 'it', 'pt'
   })

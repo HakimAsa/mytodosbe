@@ -1,9 +1,11 @@
 const ENDPOINSTS = {
   API: 'api',
+  AUTH: 'auth',
   CONSID: ':id',
   MYTODOS: 'mytodos',
+  REGISTER: 'register',
   TODOS: 'todos',
   V1: 'v1',
-};
+}
 
-exports.ep = ENDPOINSTS;
+exports.ep = ENDPOINSTS

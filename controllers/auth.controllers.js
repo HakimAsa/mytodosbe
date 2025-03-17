@@ -1,11 +1,22 @@
-const { User, validate } = require('../models/user.models')
+const asyncHandler = require('express-async-handler')
 const config = require('config')
+const bcrypt = require('bcryptjs')
+
+const { User, validate } = require('../models/user.models')
 
 // @desc register a user
 // @route POST /api/v1/auth/register
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password, language, confirmPassword } = req.body
+  const {
+    username,
+    firstname,
+    lastname,
+    email,
+    password,
+    language,
+    confirmpassword,
+  } = req.body
 
   // validate request body
   const { error } = validate(req.body, true)
@@ -15,26 +26,27 @@ const registerUser = asyncHandler(async (req, res) => {
       .send({ success: false, message: error.details[0].message })
 
   // check if password and confirm password match
-  if (password !== confirmPassword) {
+  if (password !== confirmpassword) {
     return res.status(400).send({
       success: false,
       message:
-        language === 'en'
-          ? 'Passwords do not match.'
-          : 'Mots de passe incompatibles',
+        language === 'fr'
+          ? 'Mots de passe incompatibles'
+          : 'Passwords do not match.',
     })
   }
   // check if email or username already exists
   const existingUser = await User.findOne({ $or: [{ email }, { username }] })
-  const emailMessage =
-    existingUser.language === 'en'
-      ? 'Email already exists.'
-      : `L'e-mail existe déjà.`
-  const usernameMessage =
-    existingUser.language === 'en'
-      ? 'Username already exists.'
-      : `Le nom d'utilisateur existe déjà.`
+
   if (existingUser) {
+    const emailMessage =
+      existingUser.language === 'en'
+        ? 'Email already exists.'
+        : `L'e-mail existe déjà.`
+    const usernameMessage =
+      existingUser.language === 'en'
+        ? 'Username already exists.'
+        : `Le nom d'utilisateur existe déjà.`
     if (existingUser.email === email)
       return res.status(400).send({ success: false, message: emailMessage })
     if (existingUser.username === username)
@@ -47,15 +59,17 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // create user
   const user = new User({
+    firstname,
+    lastname,
     username,
     email,
     password: hashedPassword,
     language,
-    confirmPassowrd: hashedPassword,
+    confirmpassword: hashedPassword,
   })
 
   await user.save()
-
+  console.log(user)
   sendTokenResponse(user, 201, res)
 })
 
@@ -81,6 +95,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     username: user.username,
     role: user.role,
     language: user.language,
+    fullname: user.fullname,
     email: user.email,
     expiresIn: exp,
   })

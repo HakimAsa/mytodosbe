@@ -10,8 +10,11 @@ const hpp = require('hpp')
 
 //relative paths
 const todos = require('../routes/todo.routes')
+const auth = require('../routes/auth.routes')
 const { notFound, error } = require('../middleware/error')
-const { glb } = require('../utils/Globals')
+const {
+  glb: { doSetForwardSlash: dfs },
+} = require('../utils/Globals')
 const { ep } = require('../utils/Endpoints')
 
 module.exports = function (app) {
@@ -58,7 +61,8 @@ module.exports = function (app) {
     res.json({ myfavico: 'is coming soon...' })
   })
 
-  app.use(glb.doSetForwardSlash(ep.API, ep.V1, ep.TODOS), todos)
+  app.use(dfs(ep.API, ep.V1, ep.AUTH), auth)
+  app.use(dfs(ep.API, ep.V1, ep.TODOS), todos)
 
   //global error middleware
   app.use(notFound)
