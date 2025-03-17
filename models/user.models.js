@@ -10,6 +10,21 @@ const Schema = mongoose.Schema
 
 const userSchema = new Schema(
   {
+    firstname: String,
+    lastname: String,
+    dateofbirth: Date,
+    address: {
+      additionalinformation: String,
+      city: String,
+      country: String,
+      district: String,
+      postalCode: String,
+      housenumber: String,
+      isocountrycode: String,
+      latitude: String,
+      longitude: String,
+      street: String,
+    },
     username: {
       type: String,
       unique: true,
@@ -31,7 +46,7 @@ const userSchema = new Schema(
     passowrd: {
       type: String,
     },
-    confirmPassowrd: {
+    confirmpassword: {
       type: String,
     },
 
@@ -45,8 +60,8 @@ const userSchema = new Schema(
       enum: ['en', 'fr'], //'es', 'de', 'it', 'pt'
       default: 'en',
     },
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
+    resetpasswordtoken: String,
+    resetpasswordexpire: Date,
   },
   {
     timestamps: true,
@@ -73,6 +88,25 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 const User = mongoose.model(glb.capitalizeFirstLetter(COL.USER), userSchema)
 function validateUser(user, isRequired) {
   const schema = Joi.object({
+    firstname: isRequired
+      ? Joi.string().min(2).max(50)
+      : Joi.string().min(2).max(50),
+    lastname: isRequired
+      ? Joi.string().min(2).max(50)
+      : Joi.string().min(2).max(50),
+    dateofbirth: Joi.date(),
+    address: Joi.object({
+      additionalinformation: Joi.string(),
+      city: Joi.string(),
+      country: Joi.string(),
+      district: Joi.string(),
+      postalCode: Joi.string(),
+      housenumber: Joi.string(),
+      isocountrycode: Joi.string(),
+      latitude: Joi.string(),
+      longitude: Joi.string(),
+      street: Joi.string(),
+    }),
     username: isRequired
       ? Joi.string().min(5).max(50).required()
       : Joi.string().min(5).max(50),
