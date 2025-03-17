@@ -38,6 +38,8 @@ const userSchema = new Schema(
       enum: ['en', 'fr'], //'es', 'de', 'it', 'pt'
       default: 'en',
     },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
   {
     timestamps: true,
@@ -48,11 +50,16 @@ const userSchema = new Schema(
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
-    { _id: this._id, role: this.role },
+    { _id: this._id, role: this.role, language: this.language },
     config.get('jwtPrivateKey'),
     { expiresIn: config.get('jwtExpiresIn') }
   )
   return token
+}
+
+//Match user entered password with the hashed password in db
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.passowrd)
 }
 
 const User = mongoose.model(glb.capitalizeFirstLetter(COL.USER), userSchema)
