@@ -13,6 +13,10 @@ const userSchema = new Schema(
     username: {
       type: String,
       unique: true,
+      required: true,
+      trim: true,
+      sparse: true,
+      minlength: 3,
     },
     email: {
       type: String,
@@ -25,6 +29,9 @@ const userSchema = new Schema(
       maxlength: 255,
     },
     passowrd: {
+      type: String,
+    },
+    confirmPassowrd: {
       type: String,
     },
 
@@ -47,6 +54,7 @@ const userSchema = new Schema(
     toObject: { virtuals: true, setters: true },
   }
 )
+userSchema.createIndex({ username: 1 }, { unique: true })
 
 userSchema.methods.generateAuthToken = function () {
   const token = jwt.sign(
