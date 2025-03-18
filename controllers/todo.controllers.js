@@ -10,6 +10,7 @@ const del = require('../utils/DeleteMsg')
 // @access Private
 const getMyTodos = asyncHandler(async (req, res) => {
   const myTodos = await Todo.find({})
+  //todo add filter and pagination logic
   res.send({
     count: myTodos.length,
     data: myTodos,
@@ -50,10 +51,9 @@ const createTodo = asyncHandler(async (req, res) => {
 // @route PUT /api/v1/todos/:id
 // @access Private -> only owner/admin can edit a todo
 const updateTodo = asyncHandler(async (req, res) => {
-  const { text, status, startdate, enddate } = req.body
-
   const { error } = validate(req.body, false)
   if (error) return res.status(400).send(error.details[0].message)
+  const { text, status, startdate, enddate } = req.body
 
   const id = req.params.id
 
@@ -79,6 +79,27 @@ const updateTodo = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: todo })
 })
 
+// @desc edit a todo partially
+// @route PATCH /api/v1/todos/:id
+// @access Private -> only owner/admin can edit a todo
+const patchTodo = asyncHandler(async (req, res) => {
+  const { error } = validate(req.body, false)
+  if (error) return res.status(400).send(error.details[0].message)
+
+  const id = req.params.id
+
+  let todo = await Todo.findById(id)
+  if (!todo) return res.status(404).send(fourOfour(CONS.TODO, id))
+
+  const fieldToUpdate = req.body
+
+  todo = await Todo.updateOne(id, {
+    $set: fieldToUpdate,
+  })
+
+  res.status(200).send({ success: true, data: todo })
+})
+
 // @desc delete a todo
 // @route DELETE /api/v1/todos/id
 // @access Private -> only owner/admin can delete a todo
@@ -88,15 +109,26 @@ const deleteTodo = asyncHandler(async (req, res) => {
   let todo = await Todo.findById(id)
   if (!todo) return res.status(404).send(fourOfour(CONS.TODO, id))
 
-  // if (req.user._id.toString() !== todo.user.toString())
-  //   return res.status(404).send({
-  //     error: 'Unthorized',
-  //     message: 'You can only delete your own todo',
-  //   });
+  if (
+    req.user._id.toString() !== todo.user.toString() ||
+    req.user.role !== 'admin'
+  )
+    return res.status(401).send({
+      success: false,
+      error: 'Unthorized',
+      message: 'You can only delete your own todo',
+    })
 
   todo = await Todo.findByIdAndRemove(id)
 
   res.send(del(id, todo, CONS.TODO))
 })
 
-module.exports = { getMyTodos, createTodo, deleteTodo, updateTodo, getTodoById }
+module.exports = {
+  createTodo,
+  deleteTodo,
+  getMyTodos,
+  getTodoById,
+  patchTodo,
+  updateTodo,
+}

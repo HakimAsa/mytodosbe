@@ -16,17 +16,17 @@ const todoSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ['suspended', 'finish', 'waiting', 'plan', 'new', 'working'],
+      enum: ['suspended', 'finished', 'waiting', 'plan', 'new', 'working'],
       default: 'new',
     },
     enddate: Date,
     startdate: Date,
     duration: String,
     durationmin: String,
-    // owner: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: glb.capitalizeFirstLetter(COL.USER)
-    // }
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: glb.capitalizeFirstLetter(COL.USER),
+    },
   },
   {
     timestamps: true,
@@ -44,7 +44,7 @@ function validateTodo(todo, isRequired = true) {
       : Joi.string().min(5).max(2000),
     status: Joi.string().valid(
       'suspended',
-      'finish',
+      'finished',
       'waiting',
       'plan',
       'new',
