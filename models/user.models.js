@@ -2,6 +2,7 @@ const Joi = require('joi')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const config = require('config')
+const bcrypt = require('bcryptjs')
 
 const { glb } = require('../utils/Globals')
 const { COL } = require('../utils/Collections')
@@ -45,6 +46,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
+      select: false,
     },
     confirmpassword: {
       type: String,
@@ -92,7 +94,7 @@ userSchema.methods.generateAuthToken = function () {
 
 //Match user entered password with the hashed password in db
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.passowrd)
+  return await bcrypt.compare(enteredPassword, this.password)
 }
 
 const User = mongoose.model(glb.capitalizeFirstLetter(COL.USER), userSchema)

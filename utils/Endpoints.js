@@ -2,6 +2,7 @@ const ENDPOINSTS = {
   API: 'api',
   AUTH: 'auth',
   CONSID: ':id',
+  LOGIN: 'login',
   MYTODOS: 'mytodos',
   REGISTER: 'register',
   TODOS: 'todos',

@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const config = require('config')
 const bcrypt = require('bcryptjs')
+const Joi = require('joi')
 
 const { User, validate } = require('../models/user.models')
 
@@ -69,8 +70,34 @@ const registerUser = asyncHandler(async (req, res) => {
   })
 
   await user.save()
-  console.log(user)
   sendTokenResponse(user, 201, res)
+})
+
+// @desc login a user
+// @route POST /api/v1/auth/login
+// @access Public
+const authUser = asyncHandler(async (req, res) => {
+  // validate request body
+  const { error } = validateOnLogin(req.body)
+  if (error)
+    return res
+      .status(400)
+      .send({ success: false, message: error.details[0].message })
+
+  const { email, password, username } = req.body
+  // check if user exists and password matches
+  const user = await User.findOne({ $or: [{ email }, { username }] }).select(
+    '+password language'
+  )
+  if (!user || !(await user.matchPassword(password))) {
+    const message =
+      user?.language === 'fr'
+        ? `Informations d'identification invalides`
+        : 'Invalid credentials'
+    return res.status(400).send({ success: false, message })
+  }
+  // send token response
+  sendTokenResponse(user, 200, res)
 })
 
 // Get token from model, create cookie and send response
@@ -91,9 +118,17 @@ const sendTokenResponse = (user, statusCode, res) => {
     token_type: 'Bearer',
     message: 'successfully authenticated',
     token,
-    _id: user._id,
     expiresIn: exp,
   })
 }
 
-module.exports = { registerUser }
+function validateOnLogin(req) {
+  const schema = Joi.object({
+    email: Joi.string().min(5).max(255).email(),
+    username: Joi.string().min(3).max(30),
+    password: Joi.string().min(5).max(30).required(), //min password = 8
+  }).or('username', 'email')
+  return schema.validate(req)
+}
+
+module.exports = { authUser, registerUser }
