@@ -3,17 +3,23 @@ const asyncHandler = require('express-async-handler')
 const { Todo, validate } = require('../models/todo.models')
 const fourOfour = require('../utils/404')
 const { CONS } = require('../utils/Constants')
+const {
+  glb: { filterAndPaginate },
+} = require('../utils/Globals')
 const del = require('../utils/DeleteMsg')
 
 // @desc Fetch my own todos
 // @route GET /api/v1/todos/mytodos
 // @access Private
 const getMyTodos = asyncHandler(async (req, res) => {
-  const myTodos = await Todo.find({})
-  //todo add filter and pagination logic
-  res.send({
-    count: myTodos.length,
-    data: myTodos,
+  // filter, sort and pagination function
+  const { data, count, page, pages } = await filterAndPaginate(req, Todo)
+  return res.status(200).send({
+    success: true,
+    count,
+    page,
+    pages,
+    data,
   })
 })
 

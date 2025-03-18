@@ -1,5 +1,6 @@
 {
   "db": "TODOSDB",
+  "pageSize": "Td_pageSize",
   "jwtPrivateKey": "Td_jwtPrivateKey",
   "jwtExpiresIn": "Td_jwtExpiresIn",
   "jwtCookieExpire": "Td_jwtCookieExpire"
