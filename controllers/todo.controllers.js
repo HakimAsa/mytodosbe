@@ -106,7 +106,7 @@ const patchTodo = asyncHandler(async (req, res) => {
 const deleteTodo = asyncHandler(async (req, res) => {
   const { id } = req.params
 
-  let todo = await Todo.findById(id)
+  const todo = await Todo.findById(id)
   if (!todo) return res.status(404).send(fourOfour(CONS.TODO, id))
 
   if (
@@ -119,7 +119,7 @@ const deleteTodo = asyncHandler(async (req, res) => {
       message: 'You can only delete your own todo',
     })
 
-  todo = await Todo.findByIdAndRemove(id)
+  todo.remove()
 
   res.send(del(id, todo, CONS.TODO))
 })

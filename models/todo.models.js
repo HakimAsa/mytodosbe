@@ -19,6 +19,18 @@ const todoSchema = new Schema(
       enum: ['suspended', 'finished', 'waiting', 'plan', 'new', 'working'],
       default: 'new',
     },
+    todoNotes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: glb.capitalizeFirstLetter(COL.NOTE),
+        autopopulate: false,
+      },
+    ],
+    priority: {
+      type: String,
+      enum: ['low', 'medium', 'high'],
+      default: 'medium',
+    },
     enddate: Date,
     startdate: Date,
     duration: String,
@@ -35,6 +47,12 @@ const todoSchema = new Schema(
   }
 )
 
+// Cascade Delete notes when a todo is deleted
+todoSchema.pre('remove', async function (next) {
+  await this.model(COL.NOTE).deleteMany({ todo: this._id })
+  next()
+})
+
 const Todo = mongoose.model(glb.capitalizeFirstLetter(COL.TODO), todoSchema)
 
 function validateTodo(todo, isRequired = true) {
@@ -50,6 +68,7 @@ function validateTodo(todo, isRequired = true) {
       'new',
       'working'
     ),
+    owner: isRequired ? Joi.objectId().required() : Joi.objectId(),
     startdate: Joi.date(),
     enddate: Joi.date(),
     duration: Joi.string(),
