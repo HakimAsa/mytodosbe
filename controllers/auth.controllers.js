@@ -92,11 +92,6 @@ const sendTokenResponse = (user, statusCode, res) => {
     message: 'successfully authenticated',
     token,
     _id: user._id,
-    username: user.username,
-    role: user.role,
-    language: user.language,
-    fullname: user.fullname,
-    email: user.email,
     expiresIn: exp,
   })
 }
