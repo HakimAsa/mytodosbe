@@ -1,7 +1,7 @@
 const Joi = require('joi')
 const mongoose = require('mongoose')
 
-Joi.objectId = require('joi.objectId')(Joi)
+Joi.objectId = require('joi-objectid')(Joi)
 
 const { COL } = require('../utils/Collections')
 
@@ -10,7 +10,7 @@ const Schema = mongoose.Schema
 const noteSchema = new Schema(
   {
     content: String,
-    owner: {
+    createdby: {
       type: Schema.Types.ObjectId,
       ref: COL.USER,
       required: true,
@@ -29,4 +29,15 @@ const noteSchema = new Schema(
 
 const Note = mongoose.model(COL.NOTE, noteSchema)
 
+function validateNote(req, isRequired = true) {
+  const schema = Joi.object({
+    content: isRequired
+      ? Joi.string().min(1).max(2000).required()
+      : Joi.string().min(1).max(2000),
+    todo: Joi.objectId().required(),
+  })
+  return schema.validate(req)
+}
+
 exports.Note = Note
+exports.validate = validateNote

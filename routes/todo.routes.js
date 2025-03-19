@@ -29,7 +29,12 @@ router
   .put(validateObjectId, auth, updateTodo)
   .delete(validateObjectId, auth, role(['admin']), deleteTodo)
 router.put(dsf(ep.CONSID, ep.ADDASSIGNEE), validateObjectId, addAssignee)
-router.put(dsf(ep.CONSID, ep.REMOVEASSIGNEE), auth, removeAssignee)
+router.put(
+  dsf(ep.CONSID, ep.REMOVEASSIGNEE),
+  validateObjectId,
+  auth,
+  removeAssignee
+)
 router.post(SYMBOLS.FORWARDSLASH, auth, createTodo)
 
 module.exports = router

@@ -9,8 +9,9 @@ const rateLimit = require('express-rate-limit')
 const hpp = require('hpp')
 
 //relative paths
-const todos = require('../routes/todo.routes')
 const auth = require('../routes/auth.routes')
+const notes = require('../routes/note.routes')
+const todos = require('../routes/todo.routes')
 const { notFound, error } = require('../middleware/error')
 const {
   glb: { doSetForwardSlash: dfs },
@@ -62,6 +63,7 @@ module.exports = function (app) {
   })
 
   app.use(dfs(ep.API, ep.V1, ep.AUTH), auth)
+  app.use(dfs(ep.API, ep.V1, ep.NOTES), notes)
   app.use(dfs(ep.API, ep.V1, ep.TODOS), todos)
 
   //global error middleware
