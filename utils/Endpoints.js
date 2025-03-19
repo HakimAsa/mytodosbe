@@ -4,6 +4,7 @@ const ENDPOINSTS = {
   AUTH: 'auth',
   CONSID: ':id',
   LOGIN: 'login',
+  LOGOUT: 'logout',
   MYTODOS: 'mytodos',
   REGISTER: 'register',
   REMOVEASSIGNEE: 'remove-assignee',

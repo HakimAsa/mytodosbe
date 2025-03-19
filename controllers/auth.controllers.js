@@ -100,6 +100,25 @@ const authUser = asyncHandler(async (req, res) => {
   sendTokenResponse(user, 200, res)
 })
 
+// @desc   Logout user and clear cookie
+// @route  GET /api/v1/auth/logout
+// @access Private
+const logout = asyncHandler(async (req, res) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(0), // Immediately expires the cookie
+    secure: process.env.NODE_ENV === 'production', // Ensures secure cookies in production
+    sameSite: 'Strict', // Helps prevent CSRF attacks
+  })
+
+  const message =
+    req.user.language === 'fr'
+      ? 'Déconnexion réussie'
+      : 'Logged out successfully'
+
+  res.status(200).json({ success: true, message })
+})
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.generateAuthToken()
@@ -107,6 +126,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   const options = {
     expires: new Date(exp),
     httpOnly: true,
+    sameSite: 'Strict', // Helps prevent CSRF attacks
   }
 
   if (process.env.NODE_ENV === 'production') {
@@ -131,4 +151,4 @@ function validateOnLogin(req) {
   return schema.validate(req)
 }
 
-module.exports = { authUser, registerUser }
+module.exports = { authUser, logout, registerUser }
