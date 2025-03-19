@@ -9,9 +9,13 @@ const Schema = mongoose.Schema
 
 const todoSchema = new Schema(
   {
-    text: {
+    title: {
       type: String,
       required: true,
+      maxlength: 50,
+    },
+    description: {
+      type: String,
       maxlength: 4000,
     },
     status: {
@@ -35,10 +39,17 @@ const todoSchema = new Schema(
     startdate: Date,
     duration: String,
     durationmin: String,
-    owner: {
+    createdBy: {
       type: Schema.Types.ObjectId,
       ref: glb.capitalizeFirstLetter(COL.USER),
     },
+    assignees: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: glb.capitalizeFirstLetter(COL.USER),
+        autopopulate: false,
+      },
+    ],
   },
   {
     timestamps: true,
@@ -57,9 +68,8 @@ const Todo = mongoose.model(glb.capitalizeFirstLetter(COL.TODO), todoSchema)
 
 function validateTodo(todo, isRequired = true) {
   const schema = Joi.object({
-    text: isRequired
-      ? Joi.string().min(5).max(2000).required()
-      : Joi.string().min(5).max(2000),
+    title: isRequired ? Joi.string().max(50).required() : Joi.string().max(50),
+    description: Joi.string().min(5).max(2000),
     status: Joi.string().valid(
       'suspended',
       'finished',
@@ -68,7 +78,9 @@ function validateTodo(todo, isRequired = true) {
       'new',
       'working'
     ),
-    owner: isRequired ? Joi.objectId().required() : Joi.objectId(),
+    assignees: Joi.array().items(Joi.objectId()).min(1),
+    priority: Joi.string().valid('low', 'medium', 'high').default('medium'),
+    createdby: isRequired ? Joi.objectId().required() : Joi.objectId(),
     startdate: Joi.date(),
     enddate: Joi.date(),
     duration: Joi.string(),
