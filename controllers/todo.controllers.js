@@ -45,12 +45,61 @@ const createTodo = asyncHandler(async (req, res) => {
   const { error } = validate(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
-  const todo = await Todo.create(req.body)
+  // Validate assigned users
+  const { assignees } = req.body
+  const validUsers = await User.find({ _id: { $in: assignees } })
+  if (validUsers.length !== assignees.length) {
+    const message =
+      req.user.language === 'fr'
+        ? 'Un ou plusieurs utilisateurs non trouvés'
+        : 'One or more users not found'
+    return res.status(400).json({ success: false, message })
+  }
+
+  const todo = await Todo.create({ ...req.body, createdby: req.user._id })
 
   res.status(201).send({
     success: true,
     data: todo,
   })
+})
+
+// @desc add assignees to todo
+// @route PUT /api/v1/todos/:id/add-assignee
+// @access Private
+const addAssignee = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const todo = await Todo.findById(id)
+  if (!todo) return res.status(404).send(fourOfour(CONS.TODO, id))
+
+  // Add user to assignees if not already assigned
+  const { userId } = req.body
+  if (!todo.assignees.includes(userId)) {
+    todo.assignees.push(userId)
+    await todo.save()
+  }
+
+  res.status(200).json({ message: 'User added to task', todo })
+})
+
+// @desc remode assignee from todo
+// @route PUT /api/v1/todos/:id/remove-assignee
+// @access Private
+const removeAssignee = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const todo = await Todo.findById(id)
+  if (!todo) return res.status(404).send(fourOfour(CONS.TODO, id))
+
+  // de-assign a user from a todo
+  const { userId } = req.body
+  if (todo.assignees.includes(userId)) {
+    todo.assignees = todo.assignees.filter(
+      (assigneeId) => assigneeId.toString() !== userId
+    )
+    await todo.save()
+  }
+
+  res.status(200).json({ message: 'User removed from the task', todo })
 })
 
 // @desc edit a todo
@@ -131,10 +180,12 @@ const deleteTodo = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
+  addAssignee,
   createTodo,
   deleteTodo,
   getMyTodos,
   getTodoById,
   patchTodo,
+  removeAssignee,
   updateTodo,
 }

@@ -11,7 +11,8 @@ const auth = asyncHandler(async function (req, res, next) {
   )
     token = req.headers.authorization.split(' ')[1]
   // Set token from cookie
-  else if (req.cookies.token) token = req.cookies.token
+  else if (req.cookies.token && req.headers['user-agent'])
+    token = req.cookies.token
   // Set token from header
   else token = req.header('x-auth-token')
   if (!token) return res.status(401).send('Acces denied. No token provided.')

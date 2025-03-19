@@ -12,6 +12,7 @@ const todoSchema = new Schema(
     title: {
       type: String,
       required: true,
+      default: 'Untitled Task',
       maxlength: 50,
     },
     description: {
