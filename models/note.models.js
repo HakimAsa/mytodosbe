@@ -19,7 +19,7 @@ const noteSchema = new Schema(
     lastmodifiedby: { type: Schema.Types.ObjectId, ref: COL.USER },
     lastmodifiedat: { type: Date, default: Date.now },
     isdone: { type: Boolean, default: false },
-    parentid: { type: Schema.Types.ObjectId, default: null, ref: COL.NOTE },
+    parentid: { type: Schema.Types.ObjectId, default: null, ref: COL.NOTE }, // Parent note reference
   },
   {
     timestamps: true,

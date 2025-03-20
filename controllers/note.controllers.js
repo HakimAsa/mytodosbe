@@ -9,7 +9,6 @@ const { request } = require('express')
 // @desc add a note to a give task(todo)
 // @route POST /api/v1/notes/todoId/:id
 // @access Private
-
 const addNoteToTask = asyncHandler(async (req, res) => {
   const { id } = req.params
   req.body.todo = id
@@ -23,13 +22,20 @@ const addNoteToTask = asyncHandler(async (req, res) => {
   const todo = await Todo.findById(id)
   if (!todo) return res.status(404).send(fourOfour(CONS.TODO, id))
 
-  const note = await Note.create({ ...req.body, createdby: req.user._id })
+  const note = await Note.create({
+    ...req.body,
+    createdby: req.user._id,
+    parentid: req.body.parentid || null,
+  })
 
   todo.todoNotes.push(note._id)
   await todo.save()
 
   res.status(201).send({ success: true, data: note })
 })
+
+// @desc add subnotes (reply to existing note)
+// @route POST /api/notes/
 
 module.exports = {
   addNoteToTask,
