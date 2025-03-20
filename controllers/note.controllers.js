@@ -2,18 +2,31 @@ const asyncHandler = require('express-async-handler')
 
 const { Note, validate } = require('../models/note.models')
 const { CONS } = require('../utils/Constants')
+const {
+  glb: { filterAndPaginate },
+} = require('../utils/Globals')
 const fourOfour = require('../utils/404')
 const { Todo } = require('../models/todo.models')
 
 // @desc Fetch subnotes given a note id
-// @routes GET /notes/:noteId/subnotes
+// @routes GET /notes/:noteId/subnotes?parentid=noteId
 // @access Private
 
 const getSubNotes = asyncHandler(async (req, res) => {
   const { noteId } = req.params
-  const notes = await Note.find({ parentid: noteId }).sort({ createdAt: -1 })
 
-  res.status(200).send(notes)
+  const note = await Note.findById(noteId)
+  if (!note) return res.status(404).send(fourOfour(CONS.NOTE, noteId))
+
+  const { data, count, page, pages } = await filterAndPaginate(req, Note)
+
+  res.status(200).send({
+    success: true,
+    count,
+    page,
+    pages,
+    data,
+  })
 })
 
 // @desc add a note to a give task(todo)

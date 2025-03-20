@@ -15,5 +15,5 @@ const router = express.Router()
 
 // Routes
 router.post(dsf(ep.TODOID, ep.CONSID), validateObjectId, auth, addNoteToTask)
-router.post(dsf(ep.NOTEID, ep.SUBNOTES), validateObjectId, auth, getSubNotes)
+router.get(dsf(ep.NOTEID, ep.SUBNOTES), validateObjectId, auth, getSubNotes)
 module.exports = router
