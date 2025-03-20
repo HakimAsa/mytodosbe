@@ -5,11 +5,15 @@ const {
   glb: { doSetForwardSlash: dsf },
 } = require('../utils/Globals')
 const auth = require('../middleware/auth')
-const { addNoteToTask } = require('../controllers/note.controllers')
+const {
+  addNoteToTask,
+  getSubNotes,
+} = require('../controllers/note.controllers')
 const validateObjectId = require('../middleware/validateObjectId')
 
 const router = express.Router()
 
 // Routes
 router.post(dsf(ep.TODOID, ep.CONSID), validateObjectId, auth, addNoteToTask)
+router.post(dsf(ep.NOTEID, ep.SUBNOTES), validateObjectId, auth, getSubNotes)
 module.exports = router

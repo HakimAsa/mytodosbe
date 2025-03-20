@@ -4,7 +4,17 @@ const { Note, validate } = require('../models/note.models')
 const { CONS } = require('../utils/Constants')
 const fourOfour = require('../utils/404')
 const { Todo } = require('../models/todo.models')
-const { request } = require('express')
+
+// @desc Fetch subnotes given a note id
+// @routes GET /notes/:noteId/subnotes
+// @access Private
+
+const getSubNotes = asyncHandler(async (req, res) => {
+  const { noteId } = req.params
+  const notes = await Note.find({ parentid: noteId }).sort({ createdAt: -1 })
+
+  res.status(200).send(notes)
+})
 
 // @desc add a note to a give task(todo)
 // @route POST /api/v1/notes/todoId/:id
@@ -39,4 +49,5 @@ const addNoteToTask = asyncHandler(async (req, res) => {
 
 module.exports = {
   addNoteToTask,
+  getSubNotes,
 }
