@@ -86,9 +86,11 @@ const authUser = asyncHandler(async (req, res) => {
 
   const { email, password, username } = req.body
   // check if user exists and password matches
-  const user = await User.findOne({ $or: [{ email }, { username }] }).select(
-    '+password language'
-  )
+  const orQuery = []
+  if (email) orQuery.push({ email })
+  if (username) orQuery.push({ username })
+
+  const user = await User.findOne({ $or: orQuery }).select('+password language')
   if (!user || !(await user.matchPassword(password))) {
     const message =
       user?.language === 'fr'
